@@ -1,35 +1,31 @@
-const http = require('http')
-const {readFile} = require('fs/promises')
+const express = require('express')
+const path = require('path')
 
-const port = 8000;
+const app = express()
+const port = 8080
 
-const handler = async (req, res) => {
-  if (req.url === "/" || req.url === "/index.html") {
-    const data = await readFile("./index.html", "utf8");
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '/index.html'))
+})
 
-    res.writeHeader(200, { "Content-Type": "text/html" });
-    res.write(data);
-    res.end();
-  } else if (req.url === "/about" || req.url === "/about.html") {
-    const data = await readFile("./about.html", "utf8");
+app.get('/about.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '/about.html'))
+})
 
-    res.writeHeader(200, { "Content-Type": "text/html" });
-    res.write(data);
-    res.end();
-  } else if (req.url === "/contact-me" || req.url === "/contact-me.html") {
-    const data = await readFile("./contact-me.html", "utf8");
+app.get('/contact-me.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '/contact-me.html'))
+})
 
-    res.writeHeader(200, { "Content-Type": "text/html" });
-    res.write(data);
-    res.end();
-  } else {
-    const data = await readFile("./404.html", "utf8");
-    res.statusCode = 404;
-    res.setHeader("Content-Type", "text/html");
-    res.end(data);
-  }
-};
+app.get('/index.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '/index.html'))
+})
 
-const server = http.createServer(handler);
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '404.html'))
+})
 
-server.listen(port);
+app.use(express.static(path.join(__dirname, 'public')))
+
+app.listen(port, () => {
+  console.log('Running app...')
+})
